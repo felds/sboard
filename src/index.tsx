@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
@@ -15,20 +15,27 @@ const useAudio = (file: string) => {
 
 type SoundProps = {
   file: string;
+  code?: string;
 };
-const Sound = ({ file }: SoundProps) => {
-  const tracks = ["chupa", "isso", "merda"].map(t => `audio/${t}.mp3`);
-
+const Sound = ({ file, code }: SoundProps) => {
   const [progress, setProgress] = useState(0);
-  const [track, setTrack] = useState(tracks[0]);
+  const [track, setTrack] = useState(file);
   const audio = useAudio(track);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.code === code) play();
+    };
+    window.addEventListener("keypress", handler);
+
+    return () => window.removeEventListener("keypress", handler); // cleanup
+  }, [code]);
 
   audio.ontimeupdate = () => {
     setProgress(audio.currentTime / audio.duration || 0);
   };
   audio.onended = () => {
     audio.currentTime = 0;
-    // setProgress(0)
   };
 
   const stop = () => {
@@ -36,8 +43,7 @@ const Sound = ({ file }: SoundProps) => {
     audio.currentTime = 0;
   };
   const play = () => {
-    // stop();
-    console.log(audio);
+    stop();
     audio.play();
   };
 
@@ -45,13 +51,6 @@ const Sound = ({ file }: SoundProps) => {
     <div>
       <button onClick={play}>▶️</button>
       <progress max={1} value={progress}></progress>
-      <select onChange={e => setTrack(e.target.value)}>
-        {tracks.map(t => (
-          <option value={t} key={t}>
-            {t}
-          </option>
-        ))}
-      </select>
     </div>
   );
 };
@@ -60,7 +59,9 @@ const App = () => {
   return (
     <div>
       <h1>Sboard</h1>
-      <Sound file="audio/chupa.mp3" />
+      <Sound file="audio/chupa.mp3" code="KeyQ" />
+      <Sound file="audio/isso.mp3" code="KeyW" />
+      <Sound file="audio/merda.mp3" code="KeyE" />
     </div>
   );
 };
