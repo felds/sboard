@@ -29,24 +29,24 @@ const Sound = ({ url, code, title, collection, accent }: SoundProps) => {
   const stop = useCallback(() => {
     audio.pause();
     audio.currentTime = 0;
+    setPressed(false);
   }, [audio]);
 
   const play = useCallback(() => {
     stop();
     audio.play();
+    setPressed(true);
   }, [audio, stop]);
 
   useEffect(() => {
     const keydownHandler = (e: KeyboardEvent) => {
       if (e.code === code && !e.repeat) {
-        setPressed(true);
         play();
       }
     };
 
     const keyupHandler = (e: KeyboardEvent) => {
       if (e.code === code) {
-        setPressed(false);
         stop();
       }
     };
