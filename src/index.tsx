@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
@@ -26,6 +26,16 @@ type SoundProps = {
 const Sound = ({ url, code, title, collection, accent }: SoundProps) => {
   const audio = useAudio(url);
 
+  const stop = () => {
+    audio.pause();
+    audio.currentTime = 0;
+  };
+
+  const play = () => {
+    stop();
+    audio.play();
+  };
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.code === code) play();
@@ -34,19 +44,6 @@ const Sound = ({ url, code, title, collection, accent }: SoundProps) => {
 
     return () => window.removeEventListener("keypress", handler); // cleanup
   }, [code]);
-
-  audio.onended = () => {
-    audio.currentTime = 0;
-  };
-
-  const stop = () => {
-    audio.pause();
-    audio.currentTime = 0;
-  };
-  const play = () => {
-    stop();
-    audio.play();
-  };
 
   const key = (code || "").replace(/(Key|Digit)/, "");
 
