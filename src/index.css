@@ -45,9 +45,10 @@ body {
   font-size: 66%;
   width: 100%;
   border-bottom-right-radius: 0.25rem;
-  /* background: #00000080; */
-  color: #ffffff98;
+  color: white;
+  text-shadow: 0 1px 0 black;
   font-weight: bolder;
+  opacity: 0.666;
 }
 
 .sound__title {
