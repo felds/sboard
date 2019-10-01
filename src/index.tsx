@@ -1,6 +1,7 @@
-import React, { useEffect, useCallback, useMemo } from "react";
+import React, { useEffect, useCallback, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import classnames from "classnames";
 import * as serviceWorker from "./serviceWorker";
 
 const DEFAULT_COLOR = "rgb(61, 104, 146)";
@@ -23,6 +24,7 @@ type SoundProps = {
 };
 const Sound = ({ url, code, title, collection, accent }: SoundProps) => {
   const audio = useAudio(url);
+  const [isPressed, setPressed] = useState(false);
 
   const stop = useCallback(() => {
     audio.pause();
@@ -35,20 +37,39 @@ const Sound = ({ url, code, title, collection, accent }: SoundProps) => {
   }, [audio, stop]);
 
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.code === code) play();
+    const keydownHandler = (e: KeyboardEvent) => {
+      if (e.code === code && !e.repeat) {
+        setPressed(true);
+        play();
+      }
     };
-    window.addEventListener("keypress", handler);
 
-    return () => window.removeEventListener("keypress", handler); // cleanup
+    const keyupHandler = (e: KeyboardEvent) => {
+      if (e.code === code) {
+        setPressed(false);
+        stop();
+      }
+    };
+
+    window.addEventListener("keydown", keydownHandler);
+    window.addEventListener("keyup", keyupHandler);
+
+    // cleanup
+    return () => {
+      window.removeEventListener("keydown", keydownHandler);
+      window.removeEventListener("keyup", keyupHandler);
+    };
   }, [code, play, stop]);
 
   const key = (code || "").replace(/(Key|Digit)/, "");
 
   return (
     <div
-      className="sound"
-      onClick={play}
+      className={classnames("sound", isPressed && "sound--pressed")}
+      onMouseDown={play}
+      onMouseUp={stop}
+      onTouchStart={play}
+      onTouchEnd={stop}
       style={{ backgroundColor: accent || DEFAULT_COLOR }}
     >
       {key && <div className="sound__key">{key}</div>}

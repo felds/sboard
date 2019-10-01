@@ -26,15 +26,19 @@ body {
   width: 7rem;
   height: 7rem;
   border-radius: 0.5rem;
-  background-image: linear-gradient(to bottom, #ffffff10, #ffffff00);
+  background-image: linear-gradient(to bottom, #ffffff40, #ffffff00);
   color: white;
   padding: 0.5rem;
   text-align: center;
   overflow: hidden;
   box-shadow:
     /* top glow */ inset 0px 1px 0px #ffffff50,
-    /* bevel */ inset 0px -5px 0px 0px #00000080,
+    /* bevel */ inset 0px -7px 0px 0px #00000040,
     /* projected */ 0 5px 10px #00000050;
+  user-select: none;
+}
+.sound--pressed {
+  filter: brightness(70%);
 }
 
 .sound__key {
