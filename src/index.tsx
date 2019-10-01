@@ -3,24 +3,28 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 
-const useAudio = (file: string) => {
-  let audio = new Audio(file);
+const DEFAULT_COLOR = "rgb(61, 104, 146)";
+
+const useAudio = (url: string) => {
+  let audio = new Audio();
   useEffect(() => {
+    audio.src = url;
     audio.pause();
     audio.currentTime = 0;
-    audio.src = file;
-  }, [file]);
+    audio.src = url;
+  }, [url]);
   return audio;
 };
 
 type SoundProps = {
-  file: string;
+  url: string;
   code?: string;
+  title: string;
+  collection?: string;
+  accent?: string;
 };
-const Sound = ({ file, code }: SoundProps) => {
-  const [progress, setProgress] = useState(0);
-  const [track, setTrack] = useState(file);
-  const audio = useAudio(track);
+const Sound = ({ url, code, title, collection, accent }: SoundProps) => {
+  const audio = useAudio(url);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -31,9 +35,6 @@ const Sound = ({ file, code }: SoundProps) => {
     return () => window.removeEventListener("keypress", handler); // cleanup
   }, [code]);
 
-  audio.ontimeupdate = () => {
-    setProgress(audio.currentTime / audio.duration || 0);
-  };
   audio.onended = () => {
     audio.currentTime = 0;
   };
@@ -47,21 +48,71 @@ const Sound = ({ file, code }: SoundProps) => {
     audio.play();
   };
 
+  const key = (code || "").replace(/(Key|Digit)/, "");
+
   return (
-    <div>
-      <button onClick={play}>▶️</button>
-      <progress max={1} value={progress}></progress>
+    <div
+      className="sound"
+      onClick={play}
+      style={{ backgroundColor: accent || DEFAULT_COLOR }}
+    >
+      {key && <div className="sound__key">{key}</div>}
+      <div className="sound__title">{title}</div>
+      {collection && <div className="sound__collection">{collection}</div>}
     </div>
   );
 };
 
+const sounds = [
+  [
+    "Digit1",
+    "Quero café",
+    "https://www.myinstants.com/media/sounds/01-jamalicious.mp3"
+  ],
+  [
+    "Digit2",
+    "Isso aqui é uma porcaria",
+    "https://www.myinstants.com/media/sounds/isso-aq-e_j0K5vAG.mp3"
+  ],
+  [
+    "Digit3",
+    "Que não merda nenhuma",
+    "https://www.myinstants.com/media/sounds/merda_nenhuma_rPHmp25.mp3"
+  ],
+  [
+    "Digit4",
+    "Desculpe",
+    "https://www.myinstants.com/media/sounds/desculpa_3vJrBEp.mp3"
+  ],
+  [
+    "",
+    "Desculpe",
+    "https://www.myinstants.com/media/sounds/desculpa_3vJrBEp.mp3"
+  ],
+  [
+    "Enter",
+    "Desculpe",
+    "https://www.myinstants.com/media/sounds/desculpa_3vJrBEp.mp3"
+  ],
+  [
+    "Space",
+    "Desculpe",
+    "https://www.myinstants.com/media/sounds/desculpa_3vJrBEp.mp3"
+  ],
+  [
+    "KeyJ",
+    "Aqui é Jamal",
+    "https://www.myinstants.com/media/sounds/aqui-e-jamal-ok.mp3",
+    "brown"
+  ]
+];
+
 const App = () => {
   return (
-    <div>
-      <h1>Sboard</h1>
-      <Sound file="audio/chupa.mp3" code="KeyQ" />
-      <Sound file="audio/isso.mp3" code="KeyW" />
-      <Sound file="audio/merda.mp3" code="KeyE" />
+    <div className="board">
+      {sounds.map(([code, title, url, accent], i) => (
+        <Sound key={i} code={code} title={title} url={url} accent={accent} />
+      ))}
     </div>
   );
 };

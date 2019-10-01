@@ -1,13 +1,61 @@
+html {
+  box-sizing: border-box;
+  font: 13px/1.2 sans-serif;
+}
+* {
+  box-sizing: inherit;
+}
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 7rem);
+  gap: 1rem;
+  margin: 1rem;
+  justify-content: center;
+}
+
+.sound {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 0.5rem;
+  background-image: linear-gradient(to bottom, #ffffff10, #ffffff00);
+  color: white;
+  padding: 0.5rem;
+  text-align: center;
+  overflow: hidden;
+  box-shadow:
+    /* top glow */ inset 0px 1px 0px #ffffff50,
+    /* bevel */ inset 0px -5px 0px 0px #00000080,
+    /* projected */ 0 5px 10px #00000050;
+}
+
+.sound__key {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.25rem 0.5rem;
+  font-size: 66%;
+  width: 100%;
+  border-bottom-right-radius: 0.25rem;
+  /* background: #00000080; */
+  color: #ffffff98;
+  font-weight: bolder;
+}
+
+.sound__title {
+}
+.sound__progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 0.5rem;
+  background: magenta;
 }
