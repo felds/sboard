@@ -1,20 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback, useMemo } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import * as serviceWorker from "./serviceWorker";
 
 const DEFAULT_COLOR = "rgb(61, 104, 146)";
 
-const useAudio = (url: string) => {
-  let audio = new Audio();
-  useEffect(() => {
-    audio.src = url;
+const useAudio = (url: string) =>
+  useMemo(() => {
+    const audio = new Audio(url);
     audio.pause();
     audio.currentTime = 0;
     audio.src = url;
+    return audio;
   }, [url]);
-  return audio;
-};
 
 type SoundProps = {
   url: string;
@@ -26,15 +24,15 @@ type SoundProps = {
 const Sound = ({ url, code, title, collection, accent }: SoundProps) => {
   const audio = useAudio(url);
 
-  const stop = () => {
+  const stop = useCallback(() => {
     audio.pause();
     audio.currentTime = 0;
-  };
+  }, [audio]);
 
-  const play = () => {
+  const play = useCallback(() => {
     stop();
     audio.play();
-  };
+  }, [audio, stop]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -43,7 +41,7 @@ const Sound = ({ url, code, title, collection, accent }: SoundProps) => {
     window.addEventListener("keypress", handler);
 
     return () => window.removeEventListener("keypress", handler); // cleanup
-  }, [code]);
+  }, [code, play, stop]);
 
   const key = (code || "").replace(/(Key|Digit)/, "");
 
