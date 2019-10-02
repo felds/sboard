@@ -1,8 +1,9 @@
-import React, { useEffect, useCallback, useMemo, useState } from "react";
+import classnames from "classnames";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import classnames from "classnames";
 import * as serviceWorker from "./serviceWorker";
+// import WaveSurfer from "wavesurfer.js";
 
 const DEFAULT_COLOR = "rgb(61, 104, 146)";
 
